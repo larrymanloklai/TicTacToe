@@ -1,12 +1,10 @@
-// 1 gamePlayer object constructor
-// Players: Each player should have a name and a mark (either 'X' or 'O').
+// 1. gamePlayer object constructor
 function gamePlayer(name, mark) {
     this.name = name;
     this.mark = mark;
 }
 
-// 2 gameBoard: It needs to be represented as an array and should be able to reset.
-// Manage the state of the gameBoard.
+// 2. gameBoard: It needs to be represented as an array and should be able to reset.
 const gameBoard = (function () {
     let board = Array(9).fill('');
 
@@ -18,23 +16,18 @@ const gameBoard = (function () {
         return false;
     };
 
-    const getField = (index) => {
-        return board[index];
-    };
+    const getField = (index) => board[index];
 
     const resetBoard = () => {
         board = Array(9).fill('');
     };
 
-    const getBoard = () => {
-        return board;
-    };
+    const getBoard = () => board;
 
     return { setField, getField, resetBoard, getBoard };
 })();
 
-// 3 displayController Manage game flow, check for a winner, handle player turns, and update the game status.
-
+// 3. displayController: Manage game flow, check for a winner, handle player turns, and update the game status.
 const displayController = (function () {
     const gameBoardElement = document.getElementById('gameBoard');
     const gameStatusElement = document.getElementById('gameStatus');
@@ -43,7 +36,9 @@ const displayController = (function () {
 
     const drawBoard = () => {
         gameBoardElement.innerHTML = gameBoard.getBoard().map((mark, index) => `
-            <div class="book" data-index="${index}">${mark}</div>
+            <div class="book ${mark === 'X' ? 'green-mark' : mark === 'O' ? 'red-mark' : ''}" data-index="${index}">
+                ${mark}
+            </div>
         `).join('');
     };
 
@@ -51,36 +46,20 @@ const displayController = (function () {
         gameStatusElement.textContent = message;
     };
 
-    startButton.addEventListener('click', () => {
-        const gamePlayerOneName = document.getElementById('player1').value || 'Player 1';
-        const gamePlayerTwoName = document.getElementById('player2').value || 'Player 2';
-        gameController.startGame(gamePlayerOneName, gamePlayerTwoName);
-    });
-
-    restartButton.addEventListener('click', () => {
-        const gamePlayerOneName = document.getElementById('player1').value || 'Player 1';
-        const gamePlayerTwoName = document.getElementById('player2').value || 'Player 2';
-        gameController.startGame(gamePlayerOneName, gamePlayerTwoName);
-    });
-
-    gameBoardElement.addEventListener('click', (e) => {
-        if (e.target.matches('.book')) {
-            const index = parseInt(e.target.dataset.index, 10);
-            gameController.inGame(index);
-        }
-    });
-
-    return { drawBoard, updateGameStatus };
+    return { drawBoard, updateGameStatus, startButton, restartButton };
 })();
 
-// 4 gameController
+// 4. gameController
 const gameController = (function () {
     let gamePlayers = [];
     let currentPlayerIndex = 0;
     let gameOver = false;
 
     const startGame = (gamePlayerOneName, gamePlayerTwoName) => {
-        gamePlayers = [new gamePlayer(gamePlayerOneName, 'X'), new gamePlayer(gamePlayerTwoName, 'O')];
+        gamePlayers = [
+            new gamePlayer(gamePlayerOneName, 'X'),
+            new gamePlayer(gamePlayerTwoName, 'O')
+        ];
         currentPlayerIndex = 0;
         gameOver = false;
         gameBoard.resetBoard();
@@ -99,7 +78,7 @@ const gameController = (function () {
                 displayController.updateGameStatus("It's a tie!");
             } else {
                 currentPlayerIndex = (currentPlayerIndex + 1) % 2;
-                displayController.updateGameStatus(`${gamePlayers[currentPlayerIndex].name}'s turn`);
+                displayController.updateGameStatus(`It's ${gamePlayers[currentPlayerIndex].name}'s turn`);
             }
         }
     };
@@ -109,10 +88,7 @@ const gameController = (function () {
             [0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]];
 
         for (let combination of winningCombinations) {
-            const a = combination[0];
-            const b = combination[1];
-            const c = combination[2];
-
+            const [a, b, c] = combination;
             const markA = gameBoard.getField(a);
             const markB = gameBoard.getField(b);
             const markC = gameBoard.getField(c);
@@ -124,14 +100,29 @@ const gameController = (function () {
         return false;
     };
 
-    return { startGame, inGame, finishGame };
+    return { startGame, inGame };
 })();
 
-// Initialize game setup
-function initializeGame() {
-    gameController.startGame()
-    displayController.drawBoard();
-}
+// Initialize game with event listeners
+displayController.startButton.addEventListener('click', () => {
+    const gamePlayerOneName = document.getElementById('player1').value || 'Player 1';
+    const gamePlayerTwoName = document.getElementById('player2').value || 'Player 2';
+    gameController.startGame(gamePlayerOneName, gamePlayerTwoName);
+});
 
-// Call the setup function to initialize the game
-initializeGame();
+displayController.restartButton.addEventListener('click', () => {
+    const gamePlayerOneName = document.getElementById('player1').value || 'Player 1';
+    const gamePlayerTwoName = document.getElementById('player2').value || 'Player 2';
+    gameController.startGame(gamePlayerOneName, gamePlayerTwoName);
+});
+
+// Handle clicks on the game board
+document.getElementById('gameBoard').addEventListener('click', (e) => {
+    if (e.target.matches('.book')) {
+        const index = e.target.dataset.index;
+        gameController.inGame(index);
+    }
+});
+
+// Initialize the game board display
+displayController.drawBoard();

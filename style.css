@@ -5,53 +5,94 @@ body {
     align-items: center;
     height: 100vh;
     margin: 0;
-    background-color: #f7f7f7;
+    background-color: #f0f0f0;
 }
 
 .game-container {
     text-align: center;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-.gameBoard {
+h1 {
+    margin-bottom: 20px;
+}
+
+.player-inputs input {
+    margin: 10px;
+    padding: 10px;
+    font-size: 16px;
+    width: calc(50% - 22px);
+    box-sizing: border-box;
+}
+
+.game-status {
+    margin: 20px 0;
+    font-size: 18px;
+    color: #333;
+}
+
+.game-board {
     display: grid;
     grid-template-columns: repeat(3, 100px);
     grid-template-rows: repeat(3, 100px);
     gap: 5px;
-    margin: 20px auto;
+    margin-bottom: 20px;
 }
 
-.gameBoard div {
-    width: 100px;
-    height: 100px;
-    background-color: #0073AB;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 24px;
-    color: white;
-    cursor: pointer;
-}
-
-.player-info input {
-    margin: 5px;
-    padding: 10px;
-}
-
-#gameStatus {
-    margin-top: 20px;
-    font-size: 18px;
+.green-mark {
+    color: green;
     font-weight: bold;
 }
 
-.restart-button {
-    margin-top: 20px;
-    padding: 10px 20px;
-    background-color: #42B0D5;
-    border: none;
-    color: white;
-    cursor: pointer;
+.red-mark {
+    color: red;
+    font-weight: bold;
 }
 
-.restart-button:hover {
-    background-color: #0073AB;
+.book {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem; /* Adjust the size as needed */
+    height: 100px;   /* Adjust the size as needed */
+    width: 100px;    /* Adjust the size as needed */
+    border: 1px solid #000; /* Optional: Add a border for better visibility */
+}
+
+.book:hover {
+    background-color: #d0d0d0;
+}
+
+.controls button {
+    margin: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#startButton {
+    background-color: #28a745;
+    color: white;
+}
+
+#restartButton {
+    background-color: #dc3545;
+    color: white;
+}
+
+#startButton:hover {
+    background-color: #218838;
+}
+
+#restartButton:hover {
+    background-color: #c82333;
 }
